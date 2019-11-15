@@ -14,7 +14,7 @@ public class LCSimulatorApp
     public static void main( String[] args ) throws SQLException
     {
         
-        ConfigurationDetails c = ConfigurationDetails.getInstance();
+        Config c = Config.getInstance();
         for (int ii = 0; ii < args.length; ++ii)
         {
            

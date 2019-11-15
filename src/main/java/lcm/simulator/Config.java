@@ -1,6 +1,8 @@
 package lcm.simulator;
 
-public final class ConfigurationDetails
+import java.util.Random;
+
+public final class Config
 {
     private String url;
     private String password;
@@ -8,6 +10,30 @@ public final class ConfigurationDetails
     private String raster;
     private String output;
     private String writer;
+    private int tileXdim = 100;
+    private int tileYdim = 100;
+    private Random random = new Random();
+    
+    public int getTileXdim()
+    {
+        return tileXdim;
+    }
+
+    public void setTileXdim(int tileXdim)
+    {
+        this.tileXdim = tileXdim;
+    }
+
+    public int getTileYdim()
+    {
+        return tileYdim;
+    }
+
+    public void setTileYdim(int tileYdim)
+    {
+        this.tileYdim = tileYdim;
+    }
+
     public String getWriter()
     {
         return writer;
@@ -51,9 +77,9 @@ public final class ConfigurationDetails
         this.output = output;
     }
 
-    private static final ConfigurationDetails c = new ConfigurationDetails();
+    private static final Config c = new Config();
     
-    public static final ConfigurationDetails getInstance()
+    public static final Config getInstance()
     {
         return c;
     }
@@ -96,6 +122,16 @@ public final class ConfigurationDetails
     public void setRaster(String r)
     {
         this.raster = r;
+    }
+
+    public Random getRandom()
+    {
+        return random;
+    }
+
+    public void setRandom(Random random)
+    {
+        this.random = random;
     }
 
 }

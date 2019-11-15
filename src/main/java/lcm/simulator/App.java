@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 /**
  * Hello world!
@@ -17,6 +18,7 @@ public class App
     {
         return app;
     }
+    
 
     public static void main(String[] args)
     {
@@ -35,7 +37,7 @@ public class App
 
     public int run(String[] args) throws SQLException
     {
-        ConfigurationDetails cd = ConfigurationDetails.getInstance();
+        Config cd = Config.getInstance();
 
         for (int ii = 0; ii < args.length; ++ii)
         {
@@ -56,12 +58,15 @@ public class App
             if ("-output".equals(args[ii])) cd.setOutput(args[ii+1]);
             
             if ("-nbands".equals(args[ii])) cd.setNumBands(Integer.parseInt(args[ii+1]));
+            
+            if ("-seed".equals(args[ii])) cd.setRandom(new Random(Integer.parseInt(args[ii])));
 
         }
 
         Connection con = null;
         Statement st = null;
         ResultSet rs = null;
+        String sqlString;
 
         try
         {
@@ -69,7 +74,20 @@ public class App
             con = ConnectionPool.getConnection(cd.getUrl(), cd.getUser(), cd.getPassword());
             
             TileWriterInterface tw = WriterFactory.getWriter(cd.getWriter());
-
+            
+            sqlString = "select distinct rid from " +  cd.getOutput() + " order by rid asc";
+            
+            st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sqlString);
+            
+            while (rs.next())
+            {
+                tw.writeTile(new Tile(rs.getInt(1), cd.getNumBands(), cd.getTileXdim(), cd.getTileYdim(),TileSetterFactory.getTileSetter("random")));
+              
+            }
+            
+            
+            System.out.println(sqlString);
         }
         catch (Exception e)
         {

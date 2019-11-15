@@ -45,5 +45,10 @@ class Tuple
     {
         this.stdev = stdev;
     }
+    
+    public static void main()
+    {
+        String str = "1|2.0:0.1:3.0:001";
+    }
 
 }

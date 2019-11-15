@@ -1,11 +1,11 @@
 package lcm.simulator;
 
-public class Pixel
+public class BlankPixel implements PixelInterface
 {
     private Number p[] ;
     private int m_nbands = -1;
     
-    Pixel(Number[] n)
+    BlankPixel(Number[] n)
     {
         p = n;
         m_nbands = p.length;
@@ -26,4 +26,5 @@ public class Pixel
         if (ii <= m_nbands) return p[ii-1];
         return -999999;
     }
+
 }

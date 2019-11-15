@@ -8,9 +8,8 @@ public class Tile
     Number[][][] mTile = null;
 //    TileWriter mTw = null;
 
-    public Tile()
-    {
-    }
+    
+    public Tile() {};
 
     public Tile(int rid, int nbands)
     {
@@ -22,6 +21,13 @@ public class Tile
     {
         this.mRid = rid;
         mTile = new Number[nbands][x][y];
+    }
+    
+    public Tile(int rid, int nbands, int x, int y, TileSetter ts)
+    {
+        this.mRid = rid;
+        mTile = new Number[nbands][x][y];
+        ts.set(this);
     }
     
     public int getNumBands()
@@ -136,6 +142,11 @@ public class Tile
         }
 
         return strBuff.toString();
+    }
+    
+    public void setter(TileSetter ts)
+    {
+       ts.set(this);
     }
 
     public static void main(String[] args) throws SQLException

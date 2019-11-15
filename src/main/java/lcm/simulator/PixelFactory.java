@@ -3,18 +3,15 @@ package lcm.simulator;
 public final class PixelFactory
 {
 
-    public static final PixelWriterInterface getWriter(String w) throws PixelFactoryException
+    public static final PixelInterface getPixel(String ptype, Number[] n) throws PixelFactoryException
     {
-        if ("randomPixel".equalsIgnoreCase(w)) {
-            return new RandomPixelWriter();
+       
+        if ("blankPixel".equals(ptype))
+        {
+            return new BlankPixel(n);
         }
 
-        if ("simPixel".equals(w)) {
-            return new SimPixelWriter();
-        }
-
-        if (w == null)
-            return null;
+        if (ptype == null) return null;
 
         throw new PixelFactoryException("Pixel type not found");
     }
