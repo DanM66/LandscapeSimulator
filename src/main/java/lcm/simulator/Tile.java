@@ -4,9 +4,8 @@ import java.sql.SQLException;
 public class Tile
 {
     int mRid;
-
+   
     Number[][][] mTile = null;
-//    TileWriter mTw = null;
 
     
     public Tile() {};
@@ -23,12 +22,6 @@ public class Tile
         mTile = new Number[nbands][x][y];
     }
     
-    public Tile(int rid, int nbands, int x, int y, TileSetter ts)
-    {
-        this.mRid = rid;
-        mTile = new Number[nbands][x][y];
-        ts.set(this);
-    }
     
     public int getNumBands()
     {
@@ -98,6 +91,7 @@ public class Tile
         }
     }
     
+    
     public int getId()
     {
         return this.mRid;
@@ -144,10 +138,6 @@ public class Tile
         return strBuff.toString();
     }
     
-    public void setter(TileSetter ts)
-    {
-       ts.set(this);
-    }
 
     public static void main(String[] args) throws SQLException
     {

@@ -1,22 +1,23 @@
 package lcm.simulator;
 
-public final class WriterFactory
+public final class TileWriterFactory
 {
-    public static TileWriterInterface getWriter(String w) throws Exception
+    public static TileWriterInterface getWriter(Config cd) throws Exception
     {
      
+        String writer = cd.getWriter();
         
-        if ("dbwriter".equalsIgnoreCase(w))
+        if ("dbwriter".equalsIgnoreCase(writer))
         {        
             return new DbTileWriter();
         }
         
-        if ("txt".equals(w))
+        if ("txt".equals(writer))
         {
             return new TextTileWriter();
         }
         
-        if (w == null)
+        if (writer == null)
             return null;
         
         throw new WriterFactoryException("Writer type not found");

@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Hello world!
@@ -60,6 +62,8 @@ public class App
             if ("-nbands".equals(args[ii])) cd.setNumBands(Integer.parseInt(args[ii+1]));
             
             if ("-seed".equals(args[ii])) cd.setRandom(new Random(Integer.parseInt(args[ii])));
+            
+            if ("-nthreads".equals(args[ii])) cd.setNumThreads(Integer.parseInt(args[ii + 1]));
 
         }
 
@@ -70,24 +74,28 @@ public class App
 
         try
         {
-
             con = ConnectionPool.getConnection(cd.getUrl(), cd.getUser(), cd.getPassword());
-            
-            TileWriterInterface tw = WriterFactory.getWriter(cd.getWriter());
+
+            TileWriterInterface tw = TileWriterFactory.getWriter(cd);
+            TileSetterInterface ts = TileSetterFactory.getTileSetter(cd);
+            tw.setTileSetter(ts);
             
             sqlString = "select distinct rid from " +  cd.getOutput() + " order by rid asc";
+            System.out.println(sqlString);
             
             st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sqlString);
             
+            ExecutorService executor = Executors.newFixedThreadPool(cd.getNumThreads());
             while (rs.next())
             {
-                tw.writeTile(new Tile(rs.getInt(1), cd.getNumBands(), cd.getTileXdim(), cd.getTileYdim(),TileSetterFactory.getTileSetter("random")));
-              
+                executor.execute(tw.getWorker(new Tile(rs.getInt(1), cd.getNumBands(), cd.getTileXdim(), cd.getTileYdim())));
             }
+            executor.shutdown();
+            while (!executor.isTerminated()) {}
             
+            System.out.println("\nFinished all threads");
             
-            System.out.println(sqlString);
         }
         catch (Exception e)
         {
@@ -96,7 +104,8 @@ public class App
         }
         finally
         {
-            if (con!=null) con.close();
+            if (rs != null)  rs.close();
+            if (con != null) con.close();
         }
 
         return 1;

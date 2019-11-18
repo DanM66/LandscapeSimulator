@@ -3,13 +3,10 @@ package lcm.simulator;
 public final class PixelFactory
 {
 
-    public static final PixelInterface getPixel(String ptype, Number[] n) throws PixelFactoryException
+    public static final AbstractPixel getPixel(String ptype, Number[] n) throws PixelFactoryException
     {
        
-        if ("blankPixel".equals(ptype))
-        {
-            return new BlankPixel(n);
-        }
+       
 
         if (ptype == null) return null;
 

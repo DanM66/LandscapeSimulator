@@ -12,6 +12,29 @@ public final class Config
     private String writer;
     private int tileXdim = 100;
     private int tileYdim = 100;
+    private int numThreads = 1;
+    private String fileSetterType = "random";
+    
+    public int getNumThreads()
+    {
+        return numThreads;
+    }
+
+    public String getFileSetterType()
+    {
+        return fileSetterType;
+    }
+
+    public void setFileSetterType(String fileSetterType)
+    {
+        this.fileSetterType = fileSetterType;
+    }
+
+    public void setNumThreads(int nThreads)
+    {
+        this.numThreads = nThreads;
+    }
+
     private Random random = new Random();
     
     public int getTileXdim()
