@@ -39,31 +39,35 @@ public class App
 
     public int run(String[] args) throws SQLException
     {
-        Config cd = Config.getInstance();
+        Config cg = Config.getInstance();
 
         for (int ii = 0; ii < args.length; ++ii)
         {
             System.out.println(args[ii]);
 
-            if ("-db".equals(args[ii])) cd.setUrl(args[ii + 1]);
+            if ("-db".equals(args[ii])) cg.setUrl(args[ii + 1]);
 
-            if ("-user".equals(args[ii])) cd.setUser(args[ii + 1]);
+            if ("-user".equals(args[ii])) cg.setUser(args[ii + 1]);
 
-            if ("-r".equals(args[ii])) cd.setRaster(args[ii + 1]);
+            if ("-r".equals(args[ii])) cg.setRaster(args[ii + 1]);
 
-            if ("-password".equals(args[ii])) cd.setPassword(args[ii + 1]);
+            if ("-password".equals(args[ii])) cg.setPassword(args[ii + 1]);
 
-            if ("-debug".equals(args[ii])) cd.setDebug(true);
+            if ("-debug".equals(args[ii])) cg.setDebug(true);
             
-            if ("-writer".equals(args[ii])) cd.setWriter(args[ii+1]);
+            if ("-writer".equals(args[ii])) cg.setWriter(args[ii+1]);
             
-            if ("-output".equals(args[ii])) cd.setOutput(args[ii+1]);
+            if ("-output".equals(args[ii])) cg.setOutput(args[ii+1]);
             
-            if ("-nbands".equals(args[ii])) cd.setNumBands(Integer.parseInt(args[ii+1]));
+            if ("-pixeltype".equals(args[ii])) cg.setPixelType((args[ii+1]));
             
-            if ("-seed".equals(args[ii])) cd.setRandom(new Random(Integer.parseInt(args[ii])));
+            if ("-landcover".equals(args[ii])) cg.setLandCover((args[ii+1]));
             
-            if ("-nthreads".equals(args[ii])) cd.setNumThreads(Integer.parseInt(args[ii + 1]));
+            if ("-nbands".equals(args[ii])) cg.setNumBands(Integer.parseInt(args[ii+1]));
+            
+            if ("-seed".equals(args[ii])) cg.setSeed(Integer.parseInt(args[ii]));
+            
+            if ("-nthreads".equals(args[ii])) cg.setNumThreads(Integer.parseInt(args[ii + 1]));
 
         }
 
@@ -74,22 +78,25 @@ public class App
 
         try
         {
-            con = ConnectionPool.getConnection(cd.getUrl(), cd.getUser(), cd.getPassword());
+            con = ConnectionPool.getConnection(cg.getUrl(), cg.getUser(), cg.getPassword());
 
-            TileWriterInterface tw = TileWriterFactory.getWriter(cd);
-            TileSetterInterface ts = TileSetterFactory.getTileSetter(cd);
-            tw.setTileSetter(ts);
+            TileWriterInterface tw = TileWriterFactory.getWriter(cg);
+            BandType bt = BandTypeFactory.getBandType(cg);
+            tw.setBandType(bt);
             
-            sqlString = "select distinct rid from " +  cd.getOutput() + " order by rid asc";
+            sqlString = "select distinct rid from " +  cg.getRaster() + " order by rid asc";
             System.out.println(sqlString);
             
             st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sqlString);
             
-            ExecutorService executor = Executors.newFixedThreadPool(cd.getNumThreads());
+            ExecutorService executor = Executors.newFixedThreadPool(cg.getNumThreads());
             while (rs.next())
             {
-                executor.execute(tw.getWorker(new Tile(rs.getInt(1), cd.getNumBands(), cd.getTileXdim(), cd.getTileYdim())));
+                Tile inTile = new RasterTile(rs.getInt(1), cg.getRaster());
+                Tile outTile = new Tile(inTile.getId(), cg.getNumBands(), inTile.getWidth(), inTile.getHeight());
+                executor.execute(tw.getWorker(inTile,outTile));
+                //executor.execute(tw.getWorker(new Tile(rs.getInt(1), cd.getNumBands(), cd.getTileXdim(), cd.getTileYdim())));
             }
             executor.shutdown();
             while (!executor.isTerminated()) {}

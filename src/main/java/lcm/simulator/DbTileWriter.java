@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 public class DbTileWriter implements TileWriterInterface
 {
-    
-    private TileSetterInterface ts = null;
+    BandType bt = null;
 
     public DbTileWriter() throws SQLException
     {
@@ -22,7 +21,7 @@ public class DbTileWriter implements TileWriterInterface
             Utils.drop(outRaster);
         }
         Utils.createRasterFromTemplate(outRaster, inRaster, nBands);
-        
+
     }
 
     public void writeTile(Tile theTile) throws Exception
@@ -30,18 +29,18 @@ public class DbTileWriter implements TileWriterInterface
 
         Number[][][] d = theTile.getTile();
 
-        for (int band = 0; band < d.length; ++band)
+        for (int ii = 0; ii < d.length; ++ii)
         {
 
             StringBuffer strBuff = new StringBuffer();
-            strBuff.append("[ " + Arrays.toString(d[band][0]));
+            strBuff.append("[ " + Arrays.toString(d[ii][0]));
             for (int jj = 1; jj < d[0].length; ++jj)
             {
-                strBuff.append("," + Arrays.toString(d[band][jj]));
+                strBuff.append("," + Arrays.toString(d[ii][jj]));
             }
             strBuff.append("]");
 
-            String sqlStr = "update " + Config.getInstance().getOutput() + " set rast = st_setvalues(rast, " + band
+            String sqlStr = "update " + Config.getInstance().getOutput() + " set rast = st_setvalues(rast, " + (ii + 1)
                     + ", 1, 1, ARRAY" + strBuff.toString().replaceAll("null", "NULL") + "::int[][]) where rid = "
                     + theTile.getId();
 
@@ -53,44 +52,69 @@ public class DbTileWriter implements TileWriterInterface
                 con = ConnectionPool.getConnection();
                 st = con.createStatement();
                 st.execute(sqlStr);
-                // System.out.println(sqlStr);
             }
             finally
             {
                 if (st != null) st.close();
                 if (con != null) con.close();
-                System.out.println("finished: " + theTile.getId());
             }
         }
+        System.out.println("finished: " + theTile.getId());
     }
 
-    public Runnable getWorker(Tile t) throws Exception
+    public Runnable getWorker(Tile in, Tile out) throws Exception
     {
         return new Runnable()
         {
             @Override
             public void run()
             {
-                    try
-                    {
-                        ts.set(t);
-                        writeTile(t);
-                    }
-                    catch (Exception e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                try
+                {
+                    Tile t = set(in, out);
+                    writeTile(t);
+                }
+                catch (Exception e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
         };
 
     }
 
-    @Override
-    public void setTileSetter(TileSetterInterface t)
+    public Tile set(Tile in, Tile out)
     {
-        this.ts = t;
-        
+        int xx = in.getWidth();
+        int yy = in.getHeight();
+
+        for (int x = 0; x < xx; ++x)
+        {
+            for (int y = 0; y < yy; ++y)
+            {
+                // This is a single band
+                int n = in.getCell(x, y)[0].intValue();
+                
+                Number [] d = new Number[out.getNumBands()];
+                
+                for (int ii = 0; ii < d.length; ++ii)
+                {
+                    d[ii] = bt.getBandInt(n-1, ii);
+                }
+                
+                out.setPixel(d, x, y);
+
+            }
+        }
+
+        return out;
+    }
+
+    @Override
+    public void setBandType(BandType r)
+    {
+        this.bt = r;
     }
 }

@@ -2,6 +2,7 @@ package lcm.simulator;
 
 public class TextTileWriter implements TileWriterInterface
 {
+    
 
     public TextTileWriter()
     {
@@ -14,7 +15,7 @@ public class TextTileWriter implements TileWriterInterface
             System.out.println(t.toString());
     }
 
-    public Runnable getWorker(Tile t)
+    public Runnable getWorker(Tile in, Tile out)
     {
         return new Runnable()
         {
@@ -23,7 +24,7 @@ public class TextTileWriter implements TileWriterInterface
             {
                 try
                 {
-                    writeTile(t);
+                    //writeTile(t);
                 }
                 catch (Exception e)
                 {
@@ -38,7 +39,7 @@ public class TextTileWriter implements TileWriterInterface
     }
 
     @Override
-    public void setTileSetter(TileSetterInterface t)
+    public void setBandType(BandType r)
     {
         // TODO Auto-generated method stub
         

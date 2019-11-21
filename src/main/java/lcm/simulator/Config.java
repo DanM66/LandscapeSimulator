@@ -1,7 +1,5 @@
 package lcm.simulator;
 
-import java.util.Random;
-
 public final class Config
 {
     private String url;
@@ -10,32 +8,72 @@ public final class Config
     private String raster;
     private String output;
     private String writer;
+    private String landCover;
     private int tileXdim = 100;
     private int tileYdim = 100;
     private int numThreads = 1;
-    private String fileSetterType = "random";
+    private int randUniformMax = 255;
+    private String pixelType = "random";
+    private int seed = 1;
+    
+    public int getSeed()
+    {
+        return seed;
+    }
+
+
+    public void setSeed(int seed)
+    {
+        this.seed = seed;
+    }
+
+    
+    public String getLandCover()
+    {
+        return landCover;
+    }
+
+
+    public void setLandCover(String landCover)
+    {
+        this.landCover = landCover;
+    }
+
+
+    public String getPixelType()
+    {
+        return pixelType;
+    }
+
+
+    public void setPixelType(String pixelType)
+    {
+        this.pixelType = pixelType;
+    }
     
     public int getNumThreads()
     {
         return numThreads;
     }
 
-    public String getFileSetterType()
+    
+    public int getRandUniformMax()
     {
-        return fileSetterType;
+        return randUniformMax;
     }
 
-    public void setFileSetterType(String fileSetterType)
+
+    public void setRandUniformMax(int randUniformMax)
     {
-        this.fileSetterType = fileSetterType;
+        this.randUniformMax = randUniformMax;
     }
+
 
     public void setNumThreads(int nThreads)
     {
         this.numThreads = nThreads;
     }
 
-    private Random random = new Random();
     
     public int getTileXdim()
     {
@@ -145,16 +183,6 @@ public final class Config
     public void setRaster(String r)
     {
         this.raster = r;
-    }
-
-    public Random getRandom()
-    {
-        return random;
-    }
-
-    public void setRandom(Random random)
-    {
-        this.random = random;
     }
 
 }

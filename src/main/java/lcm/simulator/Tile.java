@@ -1,5 +1,4 @@
 package lcm.simulator;
-import java.sql.SQLException;
 
 public class Tile
 {
@@ -138,13 +137,4 @@ public class Tile
         return strBuff.toString();
     }
     
-
-    public static void main(String[] args) throws SQLException
-    {
-        Tile t = new Tile(1, 7, 3, 3);
-        
-       System.out.println(t.toString());
-
-    }
-
 }
