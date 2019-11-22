@@ -5,12 +5,11 @@ public final class BandTypeFactory
     
     public static BandType getBandType(Config cg)
     {
-        double [][][] ddd = (new Tester(25,3)).getBandStuff();
         
-        if ("".equals(cg.getPixelType()))
-            return null;
+        if ("gaussian".equals(cg.getPixelType()))
+            return new RandomGaussian(cg.getSeed(), cg.getBandSpectra());
         
-        return new RandomGaussian(1, ddd);
+        return null;
     }
 
 }

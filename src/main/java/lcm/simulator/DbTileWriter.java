@@ -13,7 +13,7 @@ public class DbTileWriter implements TileWriterInterface
     {
         Config cd = Config.getInstance();
         String outRaster = cd.getOutput();
-        String inRaster = cd.getRaster();
+        String inRaster = cd.getInput();
         int nBands = cd.getNumBands();
 
         if (Utils.relationExists(outRaster))
