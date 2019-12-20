@@ -1,5 +1,10 @@
 package lcm.simulator;
 
+/**
+ * Gets a tile writer.  Currently only a dbwriter is fully implemented. 
+ * @author User
+ *
+ */
 public final class TileWriterFactory
 {
     public static TileWriterInterface getWriter(Config cd) throws Exception

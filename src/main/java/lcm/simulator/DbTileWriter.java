@@ -5,16 +5,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+/**
+ * If you want to write your results to a postgis database use this tilewriter.
+ * 
+ * @author User
+ *
+ */
 public class DbTileWriter implements TileWriterInterface
 {
     BandType bt = null;
 
     public DbTileWriter() throws SQLException
     {
-        Config cd = Config.getInstance();
+        Config cd        = Config.getInstance();
         String outRaster = cd.getOutput();
-        String inRaster = cd.getInput();
-        int nBands = cd.getNumBands();
+        String inRaster  = cd.getInput();
+        int    nBands    = cd.getNumBands();
 
         if (Utils.relationExists(outRaster))
         {
@@ -40,12 +46,12 @@ public class DbTileWriter implements TileWriterInterface
             }
             strBuff.append("]");
 
-            String sqlStr = "update " + Config.getInstance().getOutput() + " set rast = st_setvalues(rast, " + (ii + 1)
-                    + ", 1, 1, ARRAY" + strBuff.toString().replaceAll("null", "NULL") + "::int[][]) where rid = "
-                    + theTile.getId();
+            String     sqlStr = "update " + Config.getInstance().getOutput() + " set rast = st_setvalues(rast, "
+                    + (ii + 1) + ", 1, 1, ARRAY" + strBuff.toString().replaceAll("null", "NULL")
+                    + "::int[][]) where rid = " + theTile.getId();
 
-            Connection con = null;
-            Statement st = null;
+            Connection con    = null;
+            Statement  st     = null;
 
             try
             {
@@ -95,15 +101,15 @@ public class DbTileWriter implements TileWriterInterface
             for (int y = 0; y < yy; ++y)
             {
                 // This is a single band
-                int n = in.getCell(x, y)[0].intValue();
-                
-                Number [] d = new Number[out.getNumBands()];
-                
+                int      n = in.getCell(x, y)[0].intValue();
+
+                Number[] d = new Number[out.getNumBands()];
+
                 for (int ii = 0; ii < d.length; ++ii)
                 {
-                    d[ii] = bt.getBandInt(n-1, ii);
+                    d[ii] = bt.getBandValue(n, ii);
                 }
-                
+
                 out.setPixel(d, x, y);
 
             }

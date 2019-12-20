@@ -1,6 +1,7 @@
 package lcm.simulator;
 
 import java.io.File;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -10,6 +11,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * This is a helper class. It carries around all the configuration parameters so
+ * that they can be easily accessed within any part of the source.
+ * 
+ * @author User
+ *
+ */
 public final class Config
 {
     private String url;
@@ -26,16 +34,16 @@ public final class Config
     private String pixelType = "random";
     private int seed = 1;
     private boolean debug;
-    double bandSpectra[][][];
+    HashMap<Integer, double[][]> bandSpectra = null;
 
-    public double[][][] getBandSpectra()
+    public HashMap<Integer, double[][]>getBandSpectra()
     {
         return bandSpectra;
     }
 
-    public void setBandSpectra(double[][][] bandSpectra)
+    public void setBandSpectra(HashMap<Integer, double[][]> m)
     {
-        this.bandSpectra = bandSpectra;
+        this.bandSpectra = m;
     }
 
     public void init(String inputFileName)
@@ -43,19 +51,19 @@ public final class Config
 
         try
         {
-            File inputFile = new File(inputFileName);
+            File                   inputFile = new File(inputFileName);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
+            DocumentBuilder        dBuilder  = dbFactory.newDocumentBuilder();
+            Document               doc       = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
 
-            //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+            // System.out.println("Root element :" +
+            // doc.getDocumentElement().getNodeName());
             Element e = (Element) doc.getElementsByTagName("debug").item(0);
             if (e != null)
             {
                 setDebug("true".equals(e.getAttribute("value").toLowerCase()));
             }
-            
 
             e = (Element) doc.getElementsByTagName("threads").item(0);
             if (debug)
@@ -66,21 +74,18 @@ public final class Config
             {
                 setNumThreads(Integer.parseInt(e.getAttribute("value")));
             }
-            
 
             e = (Element) doc.getElementsByTagName("seed").item(0);
             if (e != null)
             {
                 setSeed(Integer.parseInt(e.getAttribute("value")));
             }
-            
 
             e = (Element) doc.getElementsByTagName("inraster").item(0);
             if (e != null)
             {
                 setInput(e.getAttribute("name"));
             }
-            
 
             e = (Element) doc.getElementsByTagName("outraster").item(0);
 
@@ -91,14 +96,14 @@ public final class Config
                 setPixelType(e.getAttribute("pixeltype"));
                 setWriter(e.getAttribute("writer"));
             }
-            
+
             e = (Element) doc.getElementsByTagName("database").item(0);
             {
                 setUrl(e.getAttribute("url"));
                 setUser(e.getAttribute("user"));
                 setPassword(e.getAttribute("password"));
             }
-            
+
             System.out.println("url = " + getUrl());
             System.out.println("user = " + getUser());
             System.out.println("password = " + getPassword());
@@ -111,40 +116,46 @@ public final class Config
             System.out.println("pixelType = " + getPixelType());
             System.out.println("writer = " + getWriter());
 
-            NodeList nlOuter = doc.getElementsByTagName("class");
-            double[][][] spectralParams = new double[nlOuter.getLength()][][];
+            NodeList     nlOuter        = doc.getElementsByTagName("class");
+            HashMap<Integer, double[][]> spectralParams = new HashMap<Integer, double[][]>();
 
             for (int ii = 0; ii < nlOuter.getLength(); ii++)
             {
+                
                 Node nodeOuter = nlOuter.item(ii);
-                //System.out.println("\nCurrent Element :" + nodeOuter.getNodeName());
+                System.out.println("\nCurrent Element :" + nodeOuter.getNodeName());
+                Element  eElement = (Element) nodeOuter;
+                int clazz = Integer.parseInt(eElement.getAttribute("number"));
+                //Element eElement = (Element) 
 
                 if (nodeOuter.getNodeType() == Node.ELEMENT_NODE)
                 {
-                    Element eElement = (Element) nodeOuter;
-                    NodeList nlInner = eElement.getElementsByTagName("band");
-                    spectralParams[ii] = new double[nlInner.getLength()][2];
+                    
+                    NodeList nlInner  = eElement.getElementsByTagName("band");
+                    double[][] dd = new double[nlInner.getLength()][2];
                     for (int jj = 0; jj < nlInner.getLength(); ++jj)
                     {
 
                         Node nodeInner = nlInner.item(jj);
                         e = (Element) nodeInner;
-                        //System.out.println("\nNested Element :" + nodeInner.getNodeName());
-                        int band = Integer.parseInt(e.getAttribute("number"));
-                        double mean = Double.parseDouble(e.getAttribute("mean"));
+                        // System.out.println("\nNested Element :" + nodeInner.getNodeName());
+                        int    band  = Integer.parseInt(e.getAttribute("number"));
+                        double mean  = Double.parseDouble(e.getAttribute("mean"));
                         double stdev = Double.parseDouble(e.getAttribute("stdev"));
-                        spectralParams[ii][band - 1][0] = mean;
-                        spectralParams[ii][band - 1][1] = stdev;
+                        dd[band - 1][0] = mean;
+                        dd[band - 1][1] = stdev;
                     }
+                    spectralParams.put(clazz, dd);
                 }
             }
             setBandSpectra(spectralParams);
-            for (int ii = 0; ii < this.getBandSpectra().length; ++ii)
+            
+            for (Integer key: getBandSpectra().keySet())
             {
-                for (int jj = 0; jj < this.getBandSpectra()[ii].length; ++jj)
+                for (int jj = 0; jj < getBandSpectra().get(key).length; ++jj)
                 {
-                    System.out.println("class = " + (ii+1) + " band = " + (jj+1) + " mean = " + getBandSpectra()[ii][jj][0]
-                            + " stdev = " + getBandSpectra()[ii][jj][1]);
+                    System.out.println("class = " + key + " band = " + (jj + 1) + " mean = "
+                            + getBandSpectra().get(key)[jj][0] + " stdev = " + getBandSpectra().get(key)[jj][1]);
                 }
             }
         }
@@ -312,7 +323,7 @@ public final class Config
     {
         this.input = r;
     }
-    
+
     public static void main(String[] args)
     {
         (new Config()).init("config.xml");

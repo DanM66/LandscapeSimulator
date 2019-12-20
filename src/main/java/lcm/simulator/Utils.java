@@ -5,6 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Some generically useful stuff
+ * @author User
+ *
+ */
 public class Utils
 {
     
@@ -122,7 +127,7 @@ public class Utils
 
             st.execute(queryString);
 
-            queryString = "update " + outRaster + " set rast = st_addband(rast,'8BUI'::text,0)";
+            queryString = "update " + outRaster + " set rast = st_addband(rast,'16BUI'::text,0)";
 
             for (int ii = 0; ii < nBands; ++ii)
             {

@@ -1,6 +1,10 @@
 package lcm.simulator;
 
-
+/**
+ *
+ * @author User
+ *
+ */
 public interface TileWriterInterface
 {
     public void writeTile(Tile t) throws Exception;

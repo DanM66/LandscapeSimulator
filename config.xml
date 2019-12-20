@@ -6,7 +6,7 @@
    <seed value = "1"/>
    
    <inraster name = "su_test"/>
-   <outraster name = "deleteme3" nbands = "3" pixeltype = "gaussian" writer = "dbwriter"/>
+   <outraster name = "deleteme3" nbands = "3" pixeltype = "gaussianint" writer = "dbwriter"/>
  
    <database url = "jdbc:postgresql://la-lcm:5432/SIM" user = "postgres" password = "FireTrail1066"/>
 

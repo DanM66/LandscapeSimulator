@@ -1,5 +1,10 @@
 package lcm.simulator;
 
+/**
+ * This maps to a raster tile.  
+ * @author User
+ *
+ */
 public class Tile
 {
     int mRid;

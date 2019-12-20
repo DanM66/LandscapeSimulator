@@ -6,10 +6,11 @@ public class RandomUniform extends BandType
     int[][] classBandMaxVal = null;;
 
 
-    public RandomUniform(int seed, int[][] maxVal)
+    public RandomUniform(int seed, int[][] maxVal, boolean _int)
     {
         super(seed);
         this.classBandMaxVal = maxVal;
+        this._int = _int;
     }
     
     
