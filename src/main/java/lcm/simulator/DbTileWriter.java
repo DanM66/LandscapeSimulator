@@ -69,11 +69,11 @@ public class DbTileWriter implements TileWriterInterface
         System.out.println("finished: " + theTile.getId());
     }
 
-    public Runnable getWorker(Tile in, Tile out) throws Exception
+    public Runnable getWorker(final Tile in, final Tile out) throws Exception
     {
         return new Runnable()
         {
-            @Override
+
             public void run()
             {
                 try
@@ -119,7 +119,6 @@ public class DbTileWriter implements TileWriterInterface
         return out;
     }
 
-    @Override
     public void setBandType(BandType r)
     {
         this.bt = r;

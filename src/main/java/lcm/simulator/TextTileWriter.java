@@ -26,7 +26,6 @@ public class TextTileWriter implements TileWriterInterface
     {
         return new Runnable()
         {
-            @Override
             public void run()
             {
                 try
@@ -45,7 +44,6 @@ public class TextTileWriter implements TileWriterInterface
 
     }
 
-    @Override
     public void setBandType(BandType r)
     {
         // TODO Auto-generated method stub
