@@ -22,7 +22,16 @@ public class RandomGaussian extends BandType
     
     public double getBandDouble(int clazz, int band)
     {
-        return this.nextGaussian()*classMeanStdev.get(clazz)[band][1] + classMeanStdev.get(clazz)[band][0]; 
+        double d = 0;
+        try
+        {
+            d = this.nextGaussian()*classMeanStdev.get(clazz)[band][1] + classMeanStdev.get(clazz)[band][0];
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return d; 
     }
 
   

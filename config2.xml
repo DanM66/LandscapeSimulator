@@ -1,0 +1,39 @@
+<?xml version = "1.0"?>
+<experiment>
+
+   <debug value = "false"/>
+   <threads value = "100"/>
+   <seed value = "1"/>
+   
+   <inraster name = "template_lc"/>
+   <outraster name = "deleteme" nbands = "3" pixeltype = "gaussian" writer = "dbwriter" />
+
+@data
+   
+   <database>
+     <url value = "jdbc:postgresql://la-lcm:5432/SIM" />
+     <usr value = "postgres"/>
+     <password value = "FireTrail1066"/>
+   </database>
+
+   <class number = "1">
+      <band number = "1" mean = "100.0" stdev = "1.5"/>
+      <band number = "2" mean = "100.0" stdev = "1.5"/>
+      <band number = "3" mean = "100.0" stdev = "1.5"/>
+   </class>
+   
+    <class number = "2">
+       <band number = "1" mean = "100.0" stdev = "1.5"/>
+      <band number = "2" mean = "100.0" stdev = "1.5"/>
+      <band number = "3" mean = "100.0" stdev = "1.5"/>
+   </class>
+   
+     <class number = "3">
+      <band number = "1" mean = "100.0" stdev = "1.5"/>
+      <band number = "2" mean = "100.0" stdev = "1.5"/>
+      <band number = "3" mean = "100.0" stdev = "1.5"/>
+   </class>
+   
+   
+   
+</experiment>

@@ -17,7 +17,7 @@ public class ARFFStats
     private Map<Integer, RunningStat[]> m = null;
     private Number noDataValue = -32768;
     private double tol = 1e-8;
-    private double reduce = 10.0;
+    private double reduce =    1.0;
 
     public void printMap()
     {
@@ -28,7 +28,7 @@ public class ARFFStats
             for (int ii = 0; ii < rs.length; ++ii)
             {
                 System.out.println(" <band number = \"" + (ii+1) + "\" mean = \"" +
-                rs[ii].mean() + "\" stdev = \"" + rs[ii].standardDeviationSample()/reduce + "\"/>");
+                rs[ii].mean() + "\" stdev = \"" + rs[ii].standardDeviationSample()*reduce + "\"/>");
                 //System.out.println(" <band number = \"" + (ii+1) + "\" mean = \"" +
                 //rs[ii].mean() + "\" stdev = \"" + 1.0 + "\"/>");
             }

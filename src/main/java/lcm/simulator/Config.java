@@ -1,6 +1,7 @@
 package lcm.simulator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -34,6 +35,7 @@ public final class Config
     private String pixelType = "random";
     private int seed = 1;
     private boolean debug;
+    private Integer[] theBands;
     HashMap<Integer, double[][]> bandSpectra = null;
 
     public HashMap<Integer, double[][]>getBandSpectra()
@@ -92,7 +94,8 @@ public final class Config
             if (e != null)
             {
                 setOutput(e.getAttribute("name"));
-                setNumBands(Integer.parseInt(e.getAttribute("nbands")));
+                //setNumBands(Integer.parseInt(e.getAttribute("nbands")));
+                setBands(e.getAttribute("bands"));
                 setPixelType(e.getAttribute("pixeltype"));
                 setWriter(e.getAttribute("writer"));
             }
@@ -113,6 +116,9 @@ public final class Config
             System.out.println("inraster = " + getInput());
             System.out.println("outraster = " + getOutput());
             System.out.println("numBands = " + getNumBands());
+            for (int ii = 0; ii < this.theBands.length; ++ii)
+                System.out.print(theBands[ii] + " ");
+            System.out.println();
             System.out.println("pixelType = " + getPixelType());
             System.out.println("writer = " + getWriter());
 
@@ -245,16 +251,43 @@ public final class Config
         this.writer = writer;
     }
 
-    private int numBands;
+
 
     public int getNumBands()
     {
-        return numBands;
+        return this.theBands.length;
+    }
+    
+    public Integer[] getTheBands()
+    {
+        return this.theBands;
     }
 
-    public void setNumBands(int numBands)
+    public void setBands(String bList)
     {
-        this.numBands = numBands;
+        ArrayList<Integer> al = new ArrayList<Integer>();
+        String[] splitStr = bList.split(",");
+        
+        for (int ii = 0; ii < splitStr.length; ++ii)
+        {
+            String[] sp = splitStr[ii].split("[-]");
+
+            if  (sp.length == 1)
+            {
+                al.add(Integer.parseInt(splitStr[ii]));
+            }
+            if (sp.length == 2)
+            {
+                for (int jj = Integer.parseInt(sp[0]); jj <= Integer.parseInt(sp[1]); ++jj)
+                {
+                    al.add(jj);
+                }
+                    
+            }
+        }
+        
+        this.theBands = al.toArray(new Integer[al.size()]);
+        
     }
 
     public boolean isDebug()
@@ -326,7 +359,7 @@ public final class Config
 
     public static void main(String[] args)
     {
-        (new Config()).init("config.xml");
+        (new Config()).init("config4.xml");
     }
 
 }

@@ -14,19 +14,20 @@ import java.util.Arrays;
 public class DbTileWriter implements TileWriterInterface
 {
     BandType bt = null;
+    Integer[] bands = null;
 
     public DbTileWriter() throws SQLException
     {
         Config cd        = Config.getInstance();
         String outRaster = cd.getOutput();
         String inRaster  = cd.getInput();
-        int    nBands    = cd.getNumBands();
+        bands  = cd.getTheBands();
 
         if (Utils.relationExists(outRaster))
         {
             Utils.drop(outRaster);
         }
-        Utils.createRasterFromTemplate(outRaster, inRaster, nBands);
+        Utils.createRasterFromTemplate(outRaster, inRaster, bands.length);
 
     }
 
@@ -107,7 +108,7 @@ public class DbTileWriter implements TileWriterInterface
 
                 for (int ii = 0; ii < d.length; ++ii)
                 {
-                    d[ii] = bt.getBandValue(n, ii);
+                    d[ii] = bt.getBandValue(n, bands[ii]);
                 }
 
                 out.setPixel(d, x, y);
