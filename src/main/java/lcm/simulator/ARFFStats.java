@@ -29,12 +29,9 @@ public class ARFFStats
             {
                 System.out.println(" <band number = \"" + (ii+1) + "\" mean = \"" +
                 rs[ii].mean() + "\" stdev = \"" + rs[ii].standardDeviationSample()*reduce + "\"/>");
-                //System.out.println(" <band number = \"" + (ii+1) + "\" mean = \"" +
-                //rs[ii].mean() + "\" stdev = \"" + 1.0 + "\"/>");
+                
             }
             System.out.println("</class>");
-
-            // <band number = "1" mean = "185.0" stdev = "8.0"/>
         }
     }
 
